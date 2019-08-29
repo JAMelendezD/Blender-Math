@@ -12,8 +12,8 @@ This is an addon design to create 3d meshes within blender 2.8. It can create di
 The addon gives the capability of creating XYZ parametric plots.
 
 <p align="center">
-  <img width="600" src="/images/xyz.png">
-  <img width="200" height = '300' src="/images/xyz_menu.png">
+  <img width="500" src="/images/xyz.png">
+  <img width="300" height = '277' src="/images/xyz_menu.png">
 </p>
 
 ## Z-Functions
