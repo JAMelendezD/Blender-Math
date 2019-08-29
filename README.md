@@ -13,7 +13,7 @@ The addon gives the capability of creating XYZ parametric plots.
 
 <p align="center">
   <img width="600" src="/images/xyz.png">
-  <img width="100" src="/images/xyz_menu.png">
+  <img width="200" height = '600' src="/images/xyz_menu.png">
 </p>
 
 ## Z-Functions
