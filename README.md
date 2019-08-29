@@ -4,15 +4,9 @@ This is an addon design to create 3d meshes within blender 2.8. It can create di
 
 
 <p align="center">
-  <img width="800" src="images/first_part.gif">
-</p>
-
-<p align="center">
-  <img width="800" src="images/second_part.gif">
-</p>
-
-<p align="center">
-  <img width="800" src="images/third_part.gif">
+  <img width="300" src="images/first_part.gif">
+  <img width="300" src="images/second_part.gif">
+  <img width="300" src="images/third_part.gif">
 </p>
 
 ## XYZ
