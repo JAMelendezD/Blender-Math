@@ -5,19 +5,19 @@ This is an addon design to create 3d meshes within blender 2.8. It can create di
 ## XYZ
 
 <p align="center">
-  <img width="800" src="./matplotlib/Images/xkcd.png">
+  <img width="800" src="/images/xyz.png">
 </p>
 
 
 ## Z-Functions
 
 <p align="center">
-  <img width="500" src="./pymol/media/example3.png">
+  <img width="800" src="images/z_function.png">
 </p>
 
 ## Atomic Orbitals
 
 <p align="center">
-  <img width="500" src="./pymol/media/torus.png">
+  <img width="800" src="images/orbitals.png">
 </p>
 
