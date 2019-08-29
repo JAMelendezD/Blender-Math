@@ -12,8 +12,8 @@ This is an addon design to create 3d meshes within blender 2.8. It can create di
 The addon gives the capability of creating XYZ parametric plots.
 
 <p align="center">
-  <img width="500" src="/images/xyz.png">
-  <img width="300" height = '281' src="/images/xyz_menu.png">
+  <img width="500" src="images/xyz.png">
+  <img width="300" height = '281' src="images/xyz_menu.png">
 </p>
 
 ## Z-Functions
@@ -21,7 +21,7 @@ The addon gives the capability of creating a z function based on a 2d grid.
 
 <p align="center">
   <img width="500" src="images/z_function.png">
-  <img width="300" height = '281' src="/images/z_function_menu.png">
+  <img width="300" height = '281' src="images/z_function_menu.png">
 </p>
 
 ## Atomic Orbitals
@@ -29,6 +29,6 @@ The addon gives the capability of creating spherical harmonics.
 
 <p align="center">
   <img width="500" src="images/orbitals.png">
-  <img width="300" height = '281' src="/images/orbitals_menu.png">
+  <img width="300" height = '281' src="images/orbitals_menu.png">
 </p>
 
