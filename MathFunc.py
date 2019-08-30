@@ -69,8 +69,8 @@ def add_xyz_object(self, context):
     create_faces(grid)
             
     #create mesh and object
-    mymesh = bpy.data.meshes.new("Math Function")
-    myobject = bpy.data.objects.new("Math Function",mymesh)
+    mymesh = bpy.data.meshes.new("XYZ Function")
+    myobject = bpy.data.objects.new("XYZ Function",mymesh)
      
     #set mesh location
     myobject.location = bpy.context.scene.cursor.location
@@ -131,8 +131,8 @@ def add_z_object(self, context):
     create_faces(grid)
        
     #create mesh and object
-    mymesh = bpy.data.meshes.new("Math Function")
-    myobject = bpy.data.objects.new("Math Function",mymesh)
+    mymesh = bpy.data.meshes.new("z Function")
+    myobject = bpy.data.objects.new("z Function",mymesh)
 
     #set mesh location
     myobject.location = bpy.context.scene.cursor.location
@@ -226,8 +226,8 @@ def add_orbital_object(self, context):
     create_faces(grid)
 
     #create mesh and object
-    mymesh = bpy.data.meshes.new("Math Function")
-    myobject = bpy.data.objects.new("Math Function",mymesh)
+    mymesh = bpy.data.meshes.new("Orbital")
+    myobject = bpy.data.objects.new("Orbital",mymesh)
 
     #set mesh location
     myobject.location = bpy.context.scene.cursor.location
