@@ -40,16 +40,15 @@ def create_faces(grid):
     return(faces)
 
 def add_xyz_object(self, context):
-    # mesh arrays
-    verts = []
-    edges = []
-     
     factor = self.scaling_factor
     grid = self.grid_size
      
     t_inc = self.theta_ubound/grid
     p_inc = self.phi_ubound/grid
-     
+    
+    verts = []
+    edges = []
+    faces = create_faces(grid)
     #fill verts array
     t = self.theta_lbound
     for i in range (0, grid + 1):
@@ -65,8 +64,6 @@ def add_xyz_object(self, context):
             p = p + p_inc
         #increment theta
         t = t + t_inc
-    
-    faces = create_faces(grid)
             
     #create mesh and object
     mymesh = bpy.data.meshes.new("XYZ Function")
@@ -106,10 +103,7 @@ def add_xyz_object(self, context):
     for f in mymesh.polygons:
         f.use_smooth = True
 
-def add_z_object(self, context):
-    verts = []
-    edges = []
-     
+def add_z_object(self, context):   
     #fill verts array
     grid = self.grid_size
     factor = self.scaling_factor
@@ -121,13 +115,14 @@ def add_z_object(self, context):
     sy = np.linspace(-yb,yb,grid)
     x,y = np.meshgrid(sx, sy)
     function = eval('%s' %self.function_input)
+	verts = []
+    edges = []
+    faces = create_faces(grid)
 
     for i in range(len(x)):
         for j in range(len(x)):
                 vert = (x[i][j],y[i][j],factor*function[i][j]) 
                 verts.append(vert)
-
-    faces = create_faces(grid)
        
     #create mesh and object
     mymesh = bpy.data.meshes.new("z Function")
@@ -160,11 +155,7 @@ def add_z_object(self, context):
     for f in mymesh.polygons:
         f.use_smooth = True
 
-
 def add_orbital_object(self, context):
-    verts = []
-    edges = []
-
     factor = self.scaling_factor
     plot = self.representation_input
     l = self.l 
@@ -172,6 +163,9 @@ def add_orbital_object(self, context):
     grid = self.grid_size
     area = grid*grid   
     PHI, THETA = np.mgrid[0:2*np.pi:grid*1j, 0:np.pi:grid*1j]
+    verts = []
+    edges = []
+    faces = create_faces(grid)
     
     if plot == 'REAL':
         
@@ -220,8 +214,6 @@ def add_orbital_object(self, context):
             for j in range(len(x)):
                 vert = (x[i][j],y[i][j],z[i][j]) 
                 verts.append(vert)
-    
-    faces = create_faces(grid)
 
     #create mesh and object
     mymesh = bpy.data.meshes.new("Orbital")
@@ -253,7 +245,6 @@ def add_orbital_object(self, context):
     #smooth shading
     for f in mymesh.polygons:
         f.use_smooth = True
-
 
 class xyz_OT_add_object(Operator):
     """Create a new Mesh Object"""
@@ -326,7 +317,6 @@ class xyz_OT_add_object(Operator):
 
         return {'FINISHED'}
 
-
 class z_OT_add_object(Operator):
     """Create a new Mesh Object"""
     bl_idname = "mesh.add_z"
@@ -371,7 +361,6 @@ class z_OT_add_object(Operator):
         add_z_object(self, context)
 
         return {'FINISHED'}
-
 
 class orbital_OT_add_object(Operator):
     """Create a new Mesh Object"""
@@ -431,7 +420,6 @@ class orbital_OT_add_object(Operator):
 
         return {'FINISHED'}
 
-
 # Registration
 
 def add_xyz_button(self, context):
@@ -461,7 +449,6 @@ def add_object_manual_map():
     )
     return url_manual_prefix, url_manual_mapping
 
-
 def register():
     bpy.utils.register_class(xyz_OT_add_object)
     bpy.utils.register_class(z_OT_add_object)
@@ -470,7 +457,6 @@ def register():
     bpy.types.VIEW3D_MT_mesh_add.append(add_xyz_button)
     bpy.types.VIEW3D_MT_mesh_add.append(add_z_button)   
     bpy.types.VIEW3D_MT_mesh_add.append(add_orbital_button)
-
 
 def unregister():
     bpy.utils.unregister_class(xyz_OT_add_object)
