@@ -37,14 +37,7 @@ def create_faces_xyz(grid, faces):
 
     return(faces)
 
-def add_modifiers(mymesh, myobject):
-    #set mesh location
-    myobject.location = bpy.context.scene.cursor.location
-    bpy.context.scene.collection.objects.link(myobject)
-     
-    #create mesh from python data
-    mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
-    mymesh.update(calc_edges=True)
+def add_modifiers(myobject):
      
     #set the object to edit mode
     bpy.context.view_layer.objects.active = myobject
@@ -119,8 +112,16 @@ def add_xyz_object(self, context):
     #create mesh and object
     mymesh = bpy.data.meshes.new("XYZ Function")
     myobject = bpy.data.objects.new("XYZ Function",mymesh)
+
+    #set mesh location
+    myobject.location = bpy.context.scene.cursor.location
+    bpy.context.scene.collection.objects.link(myobject)
      
-    add_modifiers(mymesh, myobject)
+    #create mesh from python data
+    mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
+    mymesh.update(calc_edges=True)
+
+    add_modifiers(myobject)
 
 def add_z_object(self, context):
     verts = []
