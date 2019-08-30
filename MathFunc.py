@@ -37,7 +37,7 @@ def create_faces_xyz(grid, faces):
 
     return(faces)
 
-def add_modifiers(self, myobject):
+def add_modifiers(myobject, t):
      
     #set the object to edit mode
     bpy.context.view_layer.objects.active = myobject
@@ -56,7 +56,7 @@ def add_modifiers(self, myobject):
     bpy.ops.object.mode_set(mode='OBJECT')
     
     bpy.ops.object.modifier_add(type='SOLIDIFY')
-    bpy.context.object.modifiers["Solidify"].thickness = self.thickness
+    bpy.context.object.modifiers["Solidify"].thickness = t
 
     bpy.ops.object.modifier_add(type='SUBSURF')
     bpy.context.object.modifiers["Subdivision"].levels = 3
@@ -89,7 +89,7 @@ def add_xyz_object(self, context):
     edges = []
     factor = self.scaling_factor
     grid = self.grid_size
-     
+	thickness = self.thickness
     t_inc = self.theta_ubound/grid
     p_inc = self.phi_ubound/grid
 
@@ -121,7 +121,7 @@ def add_xyz_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(myobject)
+    add_modifiers(myobject, thickness)
 
 def add_z_object(self, context):
     verts = []
@@ -130,7 +130,7 @@ def add_z_object(self, context):
     factor = self.scaling_factor
     xb = self.x_bound
     yb = self.y_bound
-
+	thickness = self.thickness
     area = grid*grid
     sx = np.linspace(-xb,xb,grid)
     sy = np.linspace(-yb,yb,grid)
@@ -154,12 +154,13 @@ def add_z_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(myobject)
+    add_modifiers(myobject,	thickness)
 
 def add_orbital_object(self, context):
     verts = []
     edges = []
     factor = self.scaling_factor
+	thickness = self.thickness
     plot = self.representation_input
     l = self.l 
     m = self.m 
@@ -227,7 +228,7 @@ def add_orbital_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(myobject)
+    add_modifiers(myobject, thickness)
 
 class xyz_OT_add_object(Operator):
     """Create a new Mesh Object"""
