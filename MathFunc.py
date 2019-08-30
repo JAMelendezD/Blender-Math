@@ -84,16 +84,14 @@ def create_faces(grid, faces):
     return(faces)
 
 def add_xyz_object(self, context):
-
     verts = []
     edges = []
     factor = self.scaling_factor
     grid = self.grid_size
-	thickness = self.thickness
+    thickness = self.thickness
     t_inc = self.theta_ubound/grid
     p_inc = self.phi_ubound/grid
 
-    #fill verts array
     t = self.theta_lbound
     for i in range (0, grid + 1):
         p = self.phi_lbound
@@ -101,23 +99,17 @@ def add_xyz_object(self, context):
             x = factor*eval('%s' %self.x_input)
             y = factor*eval('%s' %self.y_input)
             z = factor*eval('%s' %self.z_input)
-     
             vert = (x,y,z) 
             verts.append(vert)
-            #increment phi
             p = p + p_inc
-        #increment theta
         t = t + t_inc 
         
-    #create mesh and object
     mymesh = bpy.data.meshes.new("XYZ Function")
     myobject = bpy.data.objects.new("XYZ Function",mymesh)
 
-    #set mesh location
     myobject.location = bpy.context.scene.cursor.location
     bpy.context.scene.collection.objects.link(myobject)
      
-    #create mesh from python data
     mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
     mymesh.update(calc_edges=True)
 
@@ -130,7 +122,7 @@ def add_z_object(self, context):
     factor = self.scaling_factor
     xb = self.x_bound
     yb = self.y_bound
-	thickness = self.thickness
+    thickness = self.thickness
     area = grid*grid
     sx = np.linspace(-xb,xb,grid)
     sy = np.linspace(-yb,yb,grid)
@@ -142,15 +134,12 @@ def add_z_object(self, context):
                 vert = (x[i][j],y[i][j],factor*function[i][j]) 
                 verts.append(vert)
         
-    #create mesh and object
     mymesh = bpy.data.meshes.new("z Function")
     myobject = bpy.data.objects.new("z Function",mymesh)
 
-    #set mesh location
     myobject.location = bpy.context.scene.cursor.location
     bpy.context.scene.collection.objects.link(myobject)
 
-    #create mesh from python data
     mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
@@ -160,7 +149,7 @@ def add_orbital_object(self, context):
     verts = []
     edges = []
     factor = self.scaling_factor
-	thickness = self.thickness
+    thickness = self.thickness
     plot = self.representation_input
     l = self.l 
     m = self.m 
@@ -216,15 +205,12 @@ def add_orbital_object(self, context):
                 vert = (x[i][j],y[i][j],z[i][j]) 
                 verts.append(vert) 
 
-    #create mesh and object
     mymesh = bpy.data.meshes.new("Orbital")
     myobject = bpy.data.objects.new("Orbital",mymesh)
 
-    #set mesh location
     myobject.location = bpy.context.scene.cursor.location
     bpy.context.scene.collection.objects.link(myobject)
 
-    #create mesh from python data
     mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
@@ -424,8 +410,6 @@ def add_orbital_button(self, context):
         text="Orbitals",
         icon='PLUGIN')
 
-
-# This allows you to right click on a button and link to documentation
 def add_object_manual_map():
     url_manual_prefix = "https://docs.blender.org/manual/en/latest/"
     url_manual_mapping = (
