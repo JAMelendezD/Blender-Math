@@ -21,7 +21,7 @@ from numpy import cos, sin, exp, log, sqrt, pi
 
 
 def create_faces(grid):
-	faces = []
+    faces = []
     count = 0
     for i in range (0, (grid + 1) *(grid)):
         if count < grid:
