@@ -48,7 +48,8 @@ def add_xyz_object(self, context):
     
     verts = []
     edges = []
-    faces = create_faces(grid)
+	faces = []
+
     #fill verts array
     t = self.theta_lbound
     for i in range (0, grid + 1):
@@ -64,7 +65,9 @@ def add_xyz_object(self, context):
             p = p + p_inc
         #increment theta
         t = t + t_inc
-            
+
+    faces = create_faces(grid)    
+        
     #create mesh and object
     mymesh = bpy.data.meshes.new("XYZ Function")
     myobject = bpy.data.objects.new("XYZ Function",mymesh)
@@ -117,13 +120,15 @@ def add_z_object(self, context):
     function = eval('%s' %self.function_input)
 	verts = []
     edges = []
-    faces = create_faces(grid)
+    faces = []
 
     for i in range(len(x)):
         for j in range(len(x)):
                 vert = (x[i][j],y[i][j],factor*function[i][j]) 
                 verts.append(vert)
-       
+
+    faces = create_faces(grid)  
+        
     #create mesh and object
     mymesh = bpy.data.meshes.new("z Function")
     myobject = bpy.data.objects.new("z Function",mymesh)
@@ -165,7 +170,7 @@ def add_orbital_object(self, context):
     PHI, THETA = np.mgrid[0:2*np.pi:grid*1j, 0:np.pi:grid*1j]
     verts = []
     edges = []
-    faces = create_faces(grid)
+    faces = []
     
     if plot == 'REAL':
         
@@ -214,6 +219,8 @@ def add_orbital_object(self, context):
             for j in range(len(x)):
                 vert = (x[i][j],y[i][j],z[i][j]) 
                 verts.append(vert)
+
+    faces = create_faces(grid)   
 
     #create mesh and object
     mymesh = bpy.data.meshes.new("Orbital")
