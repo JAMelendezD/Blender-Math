@@ -37,6 +37,41 @@ def create_faces_xyz(grid, faces):
 
     return(faces)
 
+def add_modifiers(mymesh, myobject):
+    #set mesh location
+    myobject.location = bpy.context.scene.cursor.location
+    bpy.context.scene.collection.objects.link(myobject)
+     
+    #create mesh from python data
+    mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
+    mymesh.update(calc_edges=True)
+     
+    #set the object to edit mode
+    bpy.context.view_layer.objects.active = myobject
+    bpy.ops.object.mode_set(mode='EDIT')
+     
+    # remove duplicate vertices
+    bpy.ops.mesh.remove_doubles() 
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+
+
+    bpy.ops.mesh.select_mode( type  = 'FACE'   )
+    bpy.ops.mesh.select_all( action = 'SELECT' )
+
+    bpy.ops.mesh.flip_normals()
+
+    bpy.ops.object.mode_set(mode='OBJECT')
+    
+    bpy.ops.object.modifier_add(type='SOLIDIFY')
+    bpy.context.object.modifiers["Solidify"].thickness = self.thickness
+
+    bpy.ops.object.modifier_add(type='SUBSURF')
+    bpy.context.object.modifiers["Subdivision"].levels = 3
+
+    #smooth shading
+    for f in mymesh.polygons:
+        f.use_smooth = True
+
 def create_faces(grid, faces):
     count = 0
     for k in range (0, (grid)*(grid-1)):
@@ -85,39 +120,7 @@ def add_xyz_object(self, context):
     mymesh = bpy.data.meshes.new("XYZ Function")
     myobject = bpy.data.objects.new("XYZ Function",mymesh)
      
-    #set mesh location
-    myobject.location = bpy.context.scene.cursor.location
-    bpy.context.scene.collection.objects.link(myobject)
-     
-    #create mesh from python data
-    mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
-    mymesh.update(calc_edges=True)
-     
-    #set the object to edit mode
-    bpy.context.view_layer.objects.active = myobject
-    bpy.ops.object.mode_set(mode='EDIT')
-     
-    # remove duplicate vertices
-    bpy.ops.mesh.remove_doubles() 
-    bpy.ops.mesh.normals_make_consistent(inside=False)
-
-
-    bpy.ops.mesh.select_mode( type  = 'FACE'   )
-    bpy.ops.mesh.select_all( action = 'SELECT' )
-
-    bpy.ops.mesh.flip_normals()
-
-    bpy.ops.object.mode_set(mode='OBJECT')
-    
-    bpy.ops.object.modifier_add(type='SOLIDIFY')
-    bpy.context.object.modifiers["Solidify"].thickness = self.thickness
-
-    bpy.ops.object.modifier_add(type='SUBSURF')
-    bpy.context.object.modifiers["Subdivision"].levels = 3
-
-    #smooth shading
-    for f in mymesh.polygons:
-        f.use_smooth = True
+    add_modifiers(mymesh, myobject)
 
 def add_z_object(self, context):
     verts = []
