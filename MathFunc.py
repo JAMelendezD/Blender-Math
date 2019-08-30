@@ -214,7 +214,7 @@ def add_orbital_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(myobject, thickness)
+    add_modifiers(mymesh, myobject, thickness)
 
 class xyz_OT_add_object(Operator):
     """Create a new Mesh Object"""
