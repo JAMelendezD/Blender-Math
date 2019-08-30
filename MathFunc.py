@@ -37,7 +37,7 @@ def create_faces_xyz(grid, faces):
 
     return(faces)
 
-def add_modifiers(myobject):
+def add_modifiers(myobject, thickness):
      
     #set the object to edit mode
     bpy.context.view_layer.objects.active = myobject
@@ -56,7 +56,7 @@ def add_modifiers(myobject):
     bpy.ops.object.mode_set(mode='OBJECT')
     
     bpy.ops.object.modifier_add(type='SOLIDIFY')
-    bpy.context.object.modifiers["Solidify"].thickness = self.thickness
+    bpy.context.object.modifiers["Solidify"].thickness = thickness
 
     bpy.ops.object.modifier_add(type='SUBSURF')
     bpy.context.object.modifiers["Subdivision"].levels = 3
@@ -121,7 +121,7 @@ def add_xyz_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(myobject)
+    add_modifiers(myobject, self.thickness)
 
 def add_z_object(self, context):
     verts = []
@@ -154,24 +154,7 @@ def add_z_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
-    #set the object to edit mode
-    bpy.context.view_layer.objects.active = myobject
-    bpy.ops.object.mode_set(mode='EDIT')
-     
-    # remove duplicate vertices
-    bpy.ops.mesh.remove_doubles() 
-    bpy.ops.mesh.normals_make_consistent(inside=False)
-    bpy.ops.object.mode_set(mode='OBJECT')
-
-    bpy.ops.object.modifier_add(type='SOLIDIFY')
-    bpy.context.object.modifiers["Solidify"].thickness = self.thickness
-
-    bpy.ops.object.modifier_add(type='SUBSURF')
-    bpy.context.object.modifiers["Subdivision"].levels = 3
-
-    #smooth shading
-    for f in mymesh.polygons:
-        f.use_smooth = True
+    add_modifiers(myobject, self.thickness)
 
 def add_orbital_object(self, context):
     verts = []
@@ -244,24 +227,7 @@ def add_orbital_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
-    #set the object to edit mode
-    bpy.context.view_layer.objects.active = myobject
-    bpy.ops.object.mode_set(mode='EDIT')
-     
-    # remove duplicate vertices
-    bpy.ops.mesh.remove_doubles() 
-    bpy.ops.mesh.normals_make_consistent(inside=False)
-    bpy.ops.object.mode_set(mode='OBJECT')
-
-    bpy.ops.object.modifier_add(type='SOLIDIFY')
-    bpy.context.object.modifiers["Solidify"].thickness = self.thickness
-
-    bpy.ops.object.modifier_add(type='SUBSURF')
-    bpy.context.object.modifiers["Subdivision"].levels = 3
-
-    #smooth shading
-    for f in mymesh.polygons:
-        f.use_smooth = True
+    add_modifiers(myobject, self.thickness)
 
 class xyz_OT_add_object(Operator):
     """Create a new Mesh Object"""
