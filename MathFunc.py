@@ -20,7 +20,8 @@ import scipy.special as sp
 from numpy import cos, sin, exp, log, sqrt, pi
 
 
-def create_faces(grid, faces):
+def create_faces(grid):
+    faces = []
     count = 0
     for i in range (0, (grid + 1) *(grid)):
         if count < grid:
@@ -41,7 +42,6 @@ def create_faces(grid, faces):
 def add_xyz_object(self, context):
     # mesh arrays
     verts = []
-    faces = []
     edges = []
      
     factor = self.scaling_factor
@@ -66,7 +66,7 @@ def add_xyz_object(self, context):
         #increment theta
         t = t + t_inc
     
-    create_faces(grid, faces)
+    faces = create_faces(grid)
             
     #create mesh and object
     mymesh = bpy.data.meshes.new("XYZ Function")
@@ -108,7 +108,6 @@ def add_xyz_object(self, context):
 
 def add_z_object(self, context):
     verts = []
-    faces = []
     edges = []
      
     #fill verts array
@@ -128,7 +127,7 @@ def add_z_object(self, context):
                 vert = (x[i][j],y[i][j],factor*function[i][j]) 
                 verts.append(vert)
 
-    create_faces(grid, faces)
+    faces = create_faces(grid)
        
     #create mesh and object
     mymesh = bpy.data.meshes.new("z Function")
@@ -164,7 +163,6 @@ def add_z_object(self, context):
 
 def add_orbital_object(self, context):
     verts = []
-    faces = []
     edges = []
 
     factor = self.scaling_factor
@@ -223,7 +221,7 @@ def add_orbital_object(self, context):
                 vert = (x[i][j],y[i][j],z[i][j]) 
                 verts.append(vert)
     
-    create_faces(grid, faces)
+    faces = create_faces(grid)
 
     #create mesh and object
     mymesh = bpy.data.meshes.new("Orbital")
