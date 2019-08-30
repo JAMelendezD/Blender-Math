@@ -10,9 +10,11 @@ This is an addon design to create 3d meshes within blender 2.8. It can create di
 
 To install this module properly scipy need to be install in the blender python environment. This can easily be done as follows in linux based systems however is analogous for windows and mac:
 
-`cd /path/to/blender/python/bin`
-`./python -m ensurepip`
-`./python -m pip install scipy`
+```
+cd /path/to/blender/python/bin
+./python -m ensurepip
+./python -m pip install scipy
+```
 
 ## XYZ
 The addon gives the capability of creating XYZ parametric plots.
