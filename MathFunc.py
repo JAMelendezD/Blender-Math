@@ -9,7 +9,6 @@ bl_info = {
     "wiki_url": "",
     "category": "Add Mesh",
 }
-
 import bpy
 from bpy.types import Operator
 from bpy.props import FloatVectorProperty, FloatProperty, StringProperty, IntProperty, EnumProperty
@@ -20,8 +19,7 @@ import scipy.special as sp
 from numpy import cos, sin, exp, log, sqrt, pi
 
 
-def create_faces(grid):
-    faces = []
+def create_faces_xyz(grid, faces):
     count = 0
     for i in range (0, (grid + 1) *(grid)):
         if count < grid:
@@ -39,16 +37,33 @@ def create_faces(grid):
 
     return(faces)
 
+def create_faces(grid, faces):
+    count = 0
+    for k in range (0, (grid)*(grid-1)):
+        if count < grid-1:
+            A = k
+            B = k+1
+            C = k+(grid)+1
+            D = k+(grid)
+     
+            face = (A,B,C,D)
+            faces.append(face)
+     
+            count = count + 1
+        else:
+            count = 0
+
+    return(faces)
+
 def add_xyz_object(self, context):
+
+    verts = []
+    edges = []
     factor = self.scaling_factor
     grid = self.grid_size
      
     t_inc = self.theta_ubound/grid
     p_inc = self.phi_ubound/grid
-    
-    verts = []
-    edges = []
-	faces = []
 
     #fill verts array
     t = self.theta_lbound
@@ -64,9 +79,7 @@ def add_xyz_object(self, context):
             #increment phi
             p = p + p_inc
         #increment theta
-        t = t + t_inc
-
-    faces = create_faces(grid)    
+        t = t + t_inc 
         
     #create mesh and object
     mymesh = bpy.data.meshes.new("XYZ Function")
@@ -77,7 +90,7 @@ def add_xyz_object(self, context):
     bpy.context.scene.collection.objects.link(myobject)
      
     #create mesh from python data
-    mymesh.from_pydata(verts,edges,faces)
+    mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
     mymesh.update(calc_edges=True)
      
     #set the object to edit mode
@@ -106,8 +119,9 @@ def add_xyz_object(self, context):
     for f in mymesh.polygons:
         f.use_smooth = True
 
-def add_z_object(self, context):   
-    #fill verts array
+def add_z_object(self, context):
+    verts = []
+    edges = []
     grid = self.grid_size
     factor = self.scaling_factor
     xb = self.x_bound
@@ -118,16 +132,11 @@ def add_z_object(self, context):
     sy = np.linspace(-yb,yb,grid)
     x,y = np.meshgrid(sx, sy)
     function = eval('%s' %self.function_input)
-	verts = []
-    edges = []
-    faces = []
 
     for i in range(len(x)):
         for j in range(len(x)):
                 vert = (x[i][j],y[i][j],factor*function[i][j]) 
                 verts.append(vert)
-
-    faces = create_faces(grid)  
         
     #create mesh and object
     mymesh = bpy.data.meshes.new("z Function")
@@ -138,7 +147,7 @@ def add_z_object(self, context):
     bpy.context.scene.collection.objects.link(myobject)
 
     #create mesh from python data
-    mymesh.from_pydata(verts,edges,faces)
+    mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
     #set the object to edit mode
@@ -161,6 +170,8 @@ def add_z_object(self, context):
         f.use_smooth = True
 
 def add_orbital_object(self, context):
+    verts = []
+    edges = []
     factor = self.scaling_factor
     plot = self.representation_input
     l = self.l 
@@ -168,9 +179,6 @@ def add_orbital_object(self, context):
     grid = self.grid_size
     area = grid*grid   
     PHI, THETA = np.mgrid[0:2*np.pi:grid*1j, 0:np.pi:grid*1j]
-    verts = []
-    edges = []
-    faces = []
     
     if plot == 'REAL':
         
@@ -218,9 +226,7 @@ def add_orbital_object(self, context):
         for i in range(len(x)):
             for j in range(len(x)):
                 vert = (x[i][j],y[i][j],z[i][j]) 
-                verts.append(vert)
-
-    faces = create_faces(grid)   
+                verts.append(vert) 
 
     #create mesh and object
     mymesh = bpy.data.meshes.new("Orbital")
@@ -231,7 +237,7 @@ def add_orbital_object(self, context):
     bpy.context.scene.collection.objects.link(myobject)
 
     #create mesh from python data
-    mymesh.from_pydata(verts,edges,faces)
+    mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
     #set the object to edit mode
