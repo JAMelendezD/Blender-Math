@@ -20,10 +20,28 @@ import scipy.special as sp
 from numpy import cos, sin, exp, log, sqrt, pi
 
 
+def create_faces(grid):
+	faces = []
+    count = 0
+    for i in range (0, (grid + 1) *(grid)):
+        if count < grid:
+            A = i
+            B = i+1
+            C = (i+(grid+1))+1
+            D = (i+(grid+1))
+     
+            face = (A,B,C,D)
+            faces.append(face)
+     
+            count = count + 1
+        else:
+            count = 0
+
+	return(faces)
+
 def add_xyz_object(self, context):
     # mesh arrays
     verts = []
-    faces = []
     edges = []
      
     factor = self.scaling_factor
@@ -47,22 +65,8 @@ def add_xyz_object(self, context):
             p = p + p_inc
         #increment theta
         t = t + t_inc
-
-    #fill faces array
-    count = 0
-    for i in range (0, (grid + 1) *(grid)):
-        if count < grid:
-            A = i
-            B = i+1
-            C = (i+(grid+1))+1
-            D = (i+(grid+1))
-     
-            face = (A,B,C,D)
-            faces.append(face)
-     
-            count = count + 1
-        else:
-            count = 0
+    
+    create_faces(grid)
             
     #create mesh and object
     mymesh = bpy.data.meshes.new("Math Function")
@@ -124,20 +128,7 @@ def add_z_object(self, context):
                 vert = (x[i][j],y[i][j],factor*function[i][j]) 
                 verts.append(vert)
 
-    count = 0
-    for k in range (0, (grid)*(grid-1)):
-        if count < grid-1:
-            A = k
-            B = k+1
-            C = k+(grid)+1
-            D = k+(grid)
-     
-            face = (A,B,C,D)
-            faces.append(face)
-     
-            count = count + 1
-        else:
-            count = 0
+    create_faces(grid)
        
     #create mesh and object
     mymesh = bpy.data.meshes.new("Math Function")
@@ -232,20 +223,7 @@ def add_orbital_object(self, context):
                 vert = (x[i][j],y[i][j],z[i][j]) 
                 verts.append(vert)
     
-    count = 0
-    for k in range (0, (grid)*(grid-1)):
-        if count < grid-1:
-            A = k
-            B = k+1
-            C = k+(grid)+1
-            D = k+(grid)
-     
-            face = (A,B,C,D)
-            faces.append(face)
-     
-            count = count + 1
-        else:
-            count = 0
+    create_faces(grid)
 
     #create mesh and object
     mymesh = bpy.data.meshes.new("Math Function")
