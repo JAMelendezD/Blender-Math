@@ -12,7 +12,6 @@ bl_info = {
 
 import bpy
 from bpy.types import Operator
-from sympy import *
 from bpy.props import FloatVectorProperty, FloatProperty, StringProperty, IntProperty, EnumProperty
 from bpy_extras.object_utils import object_data_add
 from mathutils import Vector
@@ -505,7 +504,3 @@ def unregister():
     bpy.types.VIEW3D_MT_mesh_add.remove(add_xyz_button)
     bpy.types.VIEW3D_MT_mesh_add.remove(add_z_button)   
     bpy.types.VIEW3D_MT_mesh_add.remove(add_orbital_button)
-
-
-if __name__ == "__main__":
-    register()
