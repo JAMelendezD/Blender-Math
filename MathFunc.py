@@ -37,7 +37,7 @@ def create_faces(grid):
         else:
             count = 0
 
-	return(faces)
+    return(faces)
 
 def add_xyz_object(self, context):
     # mesh arrays
