@@ -37,7 +37,7 @@ def create_faces_xyz(grid, faces):
 
     return(faces)
 
-def add_modifiers(myobject, t):
+def add_modifiers(mymesh, myobject, t):
      
     #set the object to edit mode
     bpy.context.view_layer.objects.active = myobject
@@ -113,7 +113,7 @@ def add_xyz_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(myobject, thickness)
+    add_modifiers(mymesh, myobject, thickness)
 
 def add_z_object(self, context):
     verts = []
@@ -143,7 +143,7 @@ def add_z_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces(grid, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(myobject,	thickness)
+    add_modifiers(mymesh, myobject,	thickness)
 
 def add_orbital_object(self, context):
     verts = []
