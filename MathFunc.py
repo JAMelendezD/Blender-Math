@@ -17,6 +17,7 @@ from mathutils import Vector
 import numpy as np
 import scipy.special as sp
 from numpy import cos, sin, exp, log, sqrt, pi
+from . import FunctionList
 
 
 def create_faces_xyz(grid, faces):
@@ -86,9 +87,7 @@ def create_faces(grid, faces):
 def add_xyz_object(self, context):
     verts = []
     edges = []
-    factor = self.scaling_factor
     grid = self.grid_size
-    thickness = self.thickness
     t_inc = self.theta_ubound/grid
     p_inc = self.phi_ubound/grid
 
@@ -96,9 +95,9 @@ def add_xyz_object(self, context):
     for i in range (0, grid + 1):
         p = self.phi_lbound
         for j in range(0,grid + 1):
-            x = factor*eval('%s' %self.x_input)
-            y = factor*eval('%s' %self.y_input)
-            z = factor*eval('%s' %self.z_input)
+            x = self.scaling_factor*eval('%s' %self.x_input)
+            y = self.scaling_factor*eval('%s' %self.y_input)
+            z = self.scaling_factor*eval('%s' %self.z_input)
             vert = (x,y,z) 
             verts.append(vert)
             p = p + p_inc
@@ -113,25 +112,34 @@ def add_xyz_object(self, context):
     mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(mymesh, myobject, thickness)
+    add_modifiers(mymesh, myobject, self.thickness)
 
 def add_z_object(self, context):
     verts = []
     edges = []
-    grid = self.grid_size
-    factor = self.scaling_factor
-    xb = self.x_bound
-    yb = self.y_bound
-    thickness = self.thickness
-    area = grid*grid
-    sx = np.linspace(-xb,xb,grid)
-    sy = np.linspace(-yb,yb,grid)
+    area = self.grid_size*self.grid_size
+    sx = np.linspace(-self.x_bound,self.x_bound,self.grid_size)
+    sy = np.linspace(-self.y_bound,self.y_bound,self.grid_size)
     x,y = np.meshgrid(sx, sy)
-    function = eval('%s' %self.function_input)
+
+    if self.default_input == 'SADDLE' and self.function_input == '':
+        function = eval('%s' %FunctionList.saddle())
+    elif self.default_input == 'TRIGONOMETRIC' and self.function_input == '':
+        function = eval('%s' %FunctionList.trigonometric())
+    elif self.default_input == 'WAVE' and self.function_input == '':
+        function = eval('%s' %FunctionList.wave())
+    elif self.default_input == 'EXPONENTIAL' and self.function_input == '':
+        function = eval('%s' %FunctionList.exponential())
+    elif self.default_input == 'PYRAMID' and self.function_input == '':
+        function = eval('%s' %FunctionList.pyramid())
+    elif self.default_input == 'PAPER' and self.function_input == '':
+        function = eval('%s' %FunctionList.paper())
+    elif self.default_input == 'USER INPUT':  
+	    function = eval('%s' %self.function_input)
 
     for i in range(len(x)):
         for j in range(len(x)):
-                vert = (x[i][j],y[i][j],factor*function[i][j]) 
+                vert = (x[i][j],y[i][j],self.scaling_factor*function[i][j]) 
                 verts.append(vert)
         
     mymesh = bpy.data.meshes.new("z Function")
@@ -140,65 +148,61 @@ def add_z_object(self, context):
     myobject.location = bpy.context.scene.cursor.location
     bpy.context.scene.collection.objects.link(myobject)
 
-    mymesh.from_pydata(verts, edges, create_faces(grid, []))
+    mymesh.from_pydata(verts, edges, create_faces(self.grid_size, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(mymesh, myobject,	thickness)
+    add_modifiers(mymesh, myobject,	self.thickness)
 
 def add_orbital_object(self, context):
     verts = []
     edges = []
-    factor = self.scaling_factor
-    thickness = self.thickness
-    plot = self.representation_input
     l = self.l 
     m = self.m 
-    grid = self.grid_size
-    area = grid*grid   
-    PHI, THETA = np.mgrid[0:2*np.pi:grid*1j, 0:np.pi:grid*1j]
+    area = self.grid_size*self.grid_size 
+    PHI, THETA = np.mgrid[0:2*np.pi:self.grid_size*1j, 0:np.pi:self.grid_size*1j]
     
-    if plot == 'REAL':
+    if self.representation_input == 'REAL':
         
-        R = sp.sph_harm(m, l, PHI, THETA).real
-        x = factor*R*sin(THETA)*cos(PHI)
-        y = factor*R*sin(THETA)*sin(PHI)
-        z = factor*R*cos(THETA)
+        R = sp.sph_harm(self.m , self.l , PHI, THETA).real
+        x = self.scaling_factor*R*sin(THETA)*cos(PHI)
+        y = self.scaling_factor*R*sin(THETA)*sin(PHI)
+        z = self.scaling_factor*R*cos(THETA)
         
         for i in range(len(x)):
             for j in range(len(x)):
                 vert = (x[i][j],y[i][j],z[i][j]) 
                 verts.append(vert)
     
-    elif plot == 'IMAGINARY':
+    elif self.representation_input == 'IMAGINARY':
         
-        R = sp.sph_harm(m, l, PHI, THETA).imag
-        x = factor*R*sin(THETA)*cos(PHI)
-        y = factor*R*sin(THETA)*sin(PHI)
-        z = factor*R*cos(THETA)
+        R = sp.sph_harm(self.m , self.l , PHI, THETA).imag
+        x = self.scaling_factor*R*sin(THETA)*cos(PHI)
+        y = self.scaling_factor*R*sin(THETA)*sin(PHI)
+        z = self.scaling_factor*R*cos(THETA)
         
         for i in range(len(x)):
             for j in range(len(x)):
                 vert = (x[i][j],y[i][j],z[i][j]) 
                 verts.append(vert)
             
-    elif plot == 'ABSOLUTE':
+    elif self.representation_input == 'ABSOLUTE':
         
-        R = np.abs(sp.sph_harm(m, l, PHI, THETA))
-        x = factor*R*sin(THETA)*cos(PHI)
-        y = factor*R*sin(THETA)*sin(PHI)
-        z = factor*R*cos(THETA)
+        R = np.abs(sp.sph_harm(self.m , self.l , PHI, THETA))
+        x = self.scaling_factor*R*sin(THETA)*cos(PHI)
+        y = self.scaling_factor*R*sin(THETA)*sin(PHI)
+        z = self.scaling_factor*R*cos(THETA)
         
         for i in range(len(x)):
             for j in range(len(x)):
                 vert = (x[i][j],y[i][j],z[i][j]) 
                 verts.append(vert)
             
-    elif plot == "FIELD":
-        R = sp.sph_harm(m, l, PHI, THETA).real
+    elif self.representation_input == "FIELD":
+        R = sp.sph_harm(self.m , self.l , PHI, THETA).real
         s = 1
-        x = factor*(s*R+1)*np.sin(THETA)*np.cos(PHI)
-        y = factor*(s*R+1)*np.sin(THETA)*np.sin(PHI)
-        z = factor*(s*R+1)*np.cos(THETA)
+        x = self.scaling_factor*(s*R+1)*np.sin(THETA)*np.cos(PHI)
+        y = self.scaling_factor*(s*R+1)*np.sin(THETA)*np.sin(PHI)
+        z = self.scaling_factor*(s*R+1)*np.cos(THETA)
         
         for i in range(len(x)):
             for j in range(len(x)):
@@ -211,13 +215,12 @@ def add_orbital_object(self, context):
     myobject.location = bpy.context.scene.cursor.location
     bpy.context.scene.collection.objects.link(myobject)
 
-    mymesh.from_pydata(verts, edges, create_faces(grid, []))
+    mymesh.from_pydata(verts, edges, create_faces(self.grid_size, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(mymesh, myobject, thickness)
+    add_modifiers(mymesh, myobject, self.thickness)
 
 class xyz_OT_add_object(Operator):
-    """Create a new Mesh Object"""
     bl_idname = "mesh.add_xyz"
     bl_label = "Add Mesh Object"
     bl_options = {'REGISTER', 'UNDO'}
@@ -288,16 +291,30 @@ class xyz_OT_add_object(Operator):
         return {'FINISHED'}
 
 class z_OT_add_object(Operator):
-    """Create a new Mesh Object"""
     bl_idname = "mesh.add_z"
     bl_label = "Add Mesh Object"
     bl_options = {'REGISTER', 'UNDO'}
-        
-    function_input: StringProperty(
-        name="Function",
-        default = "x**2-y**2"
+
+    Func = [
+        ("SADDLE", "Saddle", "", 1),
+        ("TRIGONOMETRIC", "Trigonometric", "", 2),
+        ("WAVE", "Wave", "", 3),
+        ("EXPONENTIAL", "Exponential", "", 4),
+        ("PYRAMID", "Pyramid", "", 5),
+        ("PAPER", "Paper", "", 6),
+        ("USER INPUT", "User input", "", 7),
+    ]
+
+    default_input = EnumProperty(
+        items = Func,
+        name = "Default Functions"
     )
-    
+
+    function_input: StringProperty(
+        name = 'Function',
+        default = ''
+    )
+
     grid_size: IntProperty(
         name="Grid Subdivisions",
         default = 20,
@@ -325,7 +342,6 @@ class z_OT_add_object(Operator):
         default = 0.1
     )
 
-    
     def execute(self, context):
 
         add_z_object(self, context)
@@ -333,7 +349,6 @@ class z_OT_add_object(Operator):
         return {'FINISHED'}
 
 class orbital_OT_add_object(Operator):
-    """Create a new Mesh Object"""
     bl_idname = "mesh.add_orbital"
     bl_label = "Add Mesh Object"
     bl_options = {'REGISTER', 'UNDO'}
@@ -390,7 +405,6 @@ class orbital_OT_add_object(Operator):
 
         return {'FINISHED'}
 
-# Registration
 
 def add_xyz_button(self, context):
     self.layout.operator(
