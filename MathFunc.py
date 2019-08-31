@@ -39,30 +39,19 @@ def create_faces_xyz(grid, faces):
     return(faces)
 
 def add_modifiers(mymesh, myobject, t):
-     
-    #set the object to edit mode
+
     bpy.context.view_layer.objects.active = myobject
     bpy.ops.object.mode_set(mode='EDIT')
-     
-    # remove duplicate vertices
     bpy.ops.mesh.remove_doubles() 
     bpy.ops.mesh.normals_make_consistent(inside=False)
-
-
     bpy.ops.mesh.select_mode( type  = 'FACE'   )
     bpy.ops.mesh.select_all( action = 'SELECT' )
-
     bpy.ops.mesh.flip_normals()
-
     bpy.ops.object.mode_set(mode='OBJECT')
-    
     bpy.ops.object.modifier_add(type='SOLIDIFY')
     bpy.context.object.modifiers["Solidify"].thickness = t
-
     bpy.ops.object.modifier_add(type='SUBSURF')
     bpy.context.object.modifiers["Subdivision"].levels = 3
-
-    #smooth shading
     for f in mymesh.polygons:
         f.use_smooth = True
 
@@ -87,32 +76,50 @@ def create_faces(grid, faces):
 def add_xyz_object(self, context):
     verts = []
     edges = []
-    grid = self.grid_size
-    t_inc = self.theta_ubound/grid
-    p_inc = self.phi_ubound/grid
+    t_inc = self.theta_ubound/self.grid_size
+    p_inc = self.phi_ubound/self.grid_size
 
-    t = self.theta_lbound
-    for i in range (0, grid + 1):
-        p = self.phi_lbound
-        for j in range(0,grid + 1):
-            x = self.scaling_factor*eval('%s' %self.x_input)
-            y = self.scaling_factor*eval('%s' %self.y_input)
-            z = self.scaling_factor*eval('%s' %self.z_input)
+    if self.default_input == 'TORUS':
+        (x_input,y_input,z_input) = FunctionList.torus()
+    elif self.default_input == 'SPHERE':
+        (x_input,y_input,z_input) = FunctionList.sphere()
+    elif self.default_input == 'DNA':
+        (x_input,y_input,z_input) = FunctionList.dna()
+    elif self.default_input == 'CURVES':
+        (x_input,y_input,z_input) = FunctionList.curves()
+    elif self.default_input == 'KLEINBOTTLE':
+        (x_input,y_input,z_input) = FunctionList.kleinbot()
+    elif self.default_input == 'KLEIN8':
+        (x_input,y_input,z_input) = FunctionList.klein8()
+    elif self.default_input == 'SHELL':
+        (x_input,y_input,z_input) = FunctionList.shell()
+    elif self.default_input == 'CYLINDER':
+        (x_input,y_input,z_input) = FunctionList.cylinder()
+    elif self.default_input == 'USER INPUT':  
+	    (x_input,y_input,z_input) = (self.x_input, self.y_input, self.z_input)
+   
+    t = 0
+    for i in range (0, self.grid_size + 1):
+        p = 0
+        for j in range(0, self.grid_size + 1):
+            x = eval('%s' %x_input)
+            y = eval('%s' %y_input)
+            z = eval('%s' %z_input)
             vert = (x,y,z) 
             verts.append(vert)
             p = p + p_inc
         t = t + t_inc 
-        
+
     mymesh = bpy.data.meshes.new("XYZ Function")
-    myobject = bpy.data.objects.new("XYZ Function",mymesh)
+    myobject = bpy.data.objects.new("XYZ Function", mymesh)
 
     myobject.location = bpy.context.scene.cursor.location
     bpy.context.scene.collection.objects.link(myobject)
      
-    mymesh.from_pydata(verts, edges, create_faces_xyz(grid, []))
+    mymesh.from_pydata(verts, edges, create_faces_xyz(self.grid_size, []))
     mymesh.update(calc_edges=True)
 
-    add_modifiers(mymesh, myobject, self.thickness)
+    add_modifiers(mymesh, myobject, 0.01)
 
 def add_z_object(self, context):
     verts = []
@@ -122,17 +129,17 @@ def add_z_object(self, context):
     sy = np.linspace(-self.y_bound,self.y_bound,self.grid_size)
     x,y = np.meshgrid(sx, sy)
 
-    if self.default_input == 'SADDLE' and self.function_input == '':
+    if self.default_input == 'SADDLE':
         function = eval('%s' %FunctionList.saddle())
-    elif self.default_input == 'TRIGONOMETRIC' and self.function_input == '':
+    elif self.default_input == 'TRIGONOMETRIC':
         function = eval('%s' %FunctionList.trigonometric())
-    elif self.default_input == 'WAVE' and self.function_input == '':
+    elif self.default_input == 'WAVE':
         function = eval('%s' %FunctionList.wave())
-    elif self.default_input == 'EXPONENTIAL' and self.function_input == '':
+    elif self.default_input == 'EXPONENTIAL':
         function = eval('%s' %FunctionList.exponential())
-    elif self.default_input == 'PYRAMID' and self.function_input == '':
+    elif self.default_input == 'PYRAMID':
         function = eval('%s' %FunctionList.pyramid())
-    elif self.default_input == 'PAPER' and self.function_input == '':
+    elif self.default_input == 'PAPER':
         function = eval('%s' %FunctionList.paper())
     elif self.default_input == 'USER INPUT':  
 	    function = eval('%s' %self.function_input)
@@ -224,28 +231,39 @@ class xyz_OT_add_object(Operator):
     bl_idname = "mesh.add_xyz"
     bl_label = "Add Mesh Object"
     bl_options = {'REGISTER', 'UNDO'}
-        
+
+    Func = [
+        ("TORUS", "Torus", "", 1),
+        ("SPHERE", "Sphere", "", 2),
+        ("DNA", "Dna", "", 3),
+        ("CURVES", "Curves", "", 4),
+        ("KLEINBOTTLE", "Klein Bottle", "", 5),
+        ("KLEIN8", "Klein8", "", 6),
+        ("SHELL", "Shell", "", 7),
+        ("CYLINDER", "Cylinder", "", 8),
+        ("USER INPUT", "User Input", "", 9),
+    ]
+
+    default_input = EnumProperty(
+        items = Func,
+        name = "Default Functions"
+    )
+
     x_input: StringProperty(
         name="X",
-        default = "(2+cos(p))*cos(t)"
+        default = ''
     )
     
     y_input: StringProperty(
         name="Y",
-        default = "(2+cos(p))*sin(t)"
+        default = ''
     )
     
     z_input: StringProperty(
         name="Z",
-        default = "sin(p)"
+        default = ''
     )
-    
-    theta_lbound: FloatProperty(
-        name="Theta Lower Bound",
-        default = 0,
-        step = (pi/4)*100
-    )
-    
+
     theta_ubound: FloatProperty(
         name="Theta Upper Bound",
         default = 2*pi,
@@ -253,18 +271,11 @@ class xyz_OT_add_object(Operator):
     )
 
     
-    phi_lbound: FloatProperty(
-        name="Phi Lower Bound",
-        default = 0,
-        step = (pi/4)*100
-    )
-    
     phi_ubound: FloatProperty(
         name="Phi Upper Bound",
         default = 2*pi,
         step = (pi/4)*100
     )
-    
     
     grid_size: IntProperty(
         name="Grid Subdivisions",
@@ -272,17 +283,6 @@ class xyz_OT_add_object(Operator):
         min = 10,
         max = 100
     )
-    
-    scaling_factor: FloatProperty(
-        name="Scale",
-        default = 1.0
-    )
-    
-    thickness: FloatProperty(
-        name="Thickness",
-        default = 0.1
-    )
-
     
     def execute(self, context):
 
