@@ -19,7 +19,6 @@ import scipy.special as sp
 from numpy import cos, sin, exp, log, sqrt, pi
 from . import FunctionList
 
-
 def create_faces_xyz(grid, faces):
     count = 0
     for i in range (0, (grid + 1) *(grid)):
@@ -46,7 +45,6 @@ def add_modifiers(mymesh, myobject, t):
     bpy.ops.mesh.normals_make_consistent(inside=False)
     bpy.ops.mesh.select_mode( type  = 'FACE'   )
     bpy.ops.mesh.select_all( action = 'SELECT' )
-    bpy.ops.mesh.flip_normals()
     bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.modifier_add(type='SOLIDIFY')
     bpy.context.object.modifiers["Solidify"].thickness = t
