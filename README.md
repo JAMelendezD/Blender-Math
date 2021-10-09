@@ -15,7 +15,6 @@ cd /path/to/blender/python/bin
 ./python -m ensurepip
 ./python -m pip install scipy
 ```
-For some reason I am unaware before running these steps you have to delete the numpy folder in: `/path/to/blender/python/lib/python/site-packages`
 
 ## XYZ
 The addon gives the capability of creating XYZ parametric plots.
