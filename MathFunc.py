@@ -241,7 +241,7 @@ class xyz_OT_add_object(Operator):
         ("USER INPUT", "User Input", "", 9),
 	]
 
-    default_input = EnumProperty(
+    default_input : EnumProperty(
         items = Funcs,
         name = "Default Functions"
     )
@@ -301,7 +301,7 @@ class z_OT_add_object(Operator):
         ("USER INPUT", "User input", "", 7),
     ]
 
-    default_input = EnumProperty(
+    default_input : EnumProperty(
         items = Func,
         name = "Default Functions"
     )
@@ -356,7 +356,7 @@ class orbital_OT_add_object(Operator):
         ("FIELD", "Field", "", 4),
     ]
     
-    representation_input = EnumProperty(
+    representation_input : EnumProperty(
         items = Rep,
         name = "Representation"
     )
