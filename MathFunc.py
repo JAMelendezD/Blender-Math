@@ -14,7 +14,7 @@ import bpy
 from bpy.types import Operator, PropertyGroup, OperatorFileListElement
 from bpy.props import FloatVectorProperty, FloatProperty, StringProperty, IntProperty, EnumProperty
 import numpy as np
-#import scipy.special as sp
+import scipy.special as sp
 from numpy import cos, sin, exp, log, sqrt, pi
 from . import FunctionList
 
