@@ -12,8 +12,8 @@ To install this module properly scipy need to be install in the blender python e
 
 ```
 cd /path/to/blender/python/bin
-./python -m ensurepip
-./python -m pip install scipy
+./python3.9 -m ensurepip
+./python3.9 -m pip install scipy
 ```
 
 ## XYZ
